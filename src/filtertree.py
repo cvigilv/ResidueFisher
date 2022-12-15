@@ -19,6 +19,7 @@ if __name__ == "__main__":
 
     # Read tree file into string
     treestring = open(sys.argv[1], "r").read().replace("\n", "")
+    output_source = os.path.basename(sys.argv[1]).split('.')[1]
     output_path = os.path.dirname(sys.argv[1])
 
     # Convert tree string into Tree object
@@ -65,14 +66,14 @@ if __name__ == "__main__":
     sns.clustermap(
         dmat, cmap="Spectral_r", row_colors=[cmap(l) for l in best_cluster["labels"]]
     )
-    plt.savefig(f"{output_path}/tree.matrix_complete.pdf", dpi=300)
+    plt.savefig(f"{output_path}/tree.matrix_complete.{output_source}.pdf", dpi=300)
 
     leaf2group = dict(zip(dmat.columns, best_cluster["labels"]))
     for i, leaf in enumerate(t.get_leaves()):
         nstyle = NodeStyle()
         nstyle["bgcolor"] = mpl.colors.to_hex(cmap(leaf2group[leaf.name]))
         leaf.set_style(nstyle)
-    t.render(f"{output_path}/tree.complete.pdf", dpi=300)
+    t.render(f"{output_path}/tree.complete.{output_source}.pdf", dpi=300)
     print("Leaf group assignation:")
     pprint.pprint(leaf2group)
 
@@ -87,13 +88,13 @@ if __name__ == "__main__":
         cmap="Spectral_r",
         row_colors=[cmap(l) for l in group_representatives.keys()],
     )
-    plt.savefig(f"{output_path}/tree.matrix_representatives.pdf", dpi=300)
+    plt.savefig(f"{output_path}/tree.matrix_representatives.{output_source}.pdf", dpi=300)
 
     t2 = t.copy()
     for leaf in t2.get_leaves():
         if leaf.name not in group_representatives.values():
             leaf.delete()
-    t2.render(f"{output_path}/tree.representatives.pdf", dpi=300)
+    t2.render(f"{output_path}/tree.representatives.{output_source}.pdf", dpi=300)
     print(f"Number of leafs after filtering: {len(t2.get_leaves())}")
 
     # Write filtered tree to file
