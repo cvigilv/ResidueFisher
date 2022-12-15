@@ -82,7 +82,11 @@ exit
 TREE_RESULTS="${GIT_ROOT}/results/${RESULTS_PATH}/tree"
 mkdir "$TREE_RESULTS" || exit 1
 python3 "${GIT_ROOT}/src/createtree.py" "$MSA_RESULTS/msa.aa.fasta" "$TREE_RESULTS/hits.nw" > "$TREE_RESULTS/tree.log"
-python3 "${GIT_ROOT}/src/filtertree.py" "$TREE_RESULTS/hits.nw" "$TREE_RESULTS/pruned_tree.nw" &> "$TREE_RESULTS/prunning.log"
+for SOURCE in aa 3di aa_3di 3di_aa;
+do
+	python3 "${GIT_ROOT}/src/createtree.py" "$MSA_RESULTS/msa.${SOURCE}.fasta" "$TREE_RESULTS/hits.${SOURCE}.nw" > "$TREE_RESULTS/tree.${SOURCE}.log"
+	python3 "${GIT_ROOT}/src/filtertree.py" "$TREE_RESULTS/hits.${SOURCE}.nw" "$TREE_RESULTS/pruned_tree.${SOURCE}.nw" &> "$TREE_RESULTS/prunning.${SOURCE}.log"
+done
 
 # 5. Structural alignment
 # TODO: Implementar alineamiento estructural con TMalign y MOMA2 (via tmux)
