@@ -21,6 +21,7 @@ if [[ -z $1 || $# -lt 2 || $# -ge 3 ]]; then
 fi
 
 # 0. Initialize script
+echo "foldseek-fishing.sh - $(date)"
 QUERY=$(basename "$1" | sed "s/.pdb//" | sed "s/_//")
 QUERY_PATH=$(readlink -f "$1")
 DATABASE="$2"
@@ -29,6 +30,7 @@ RESULTS_PATH="${QUERY}_${DATABASE}"
 mkdir "${GIT_ROOT}/results/${RESULTS_PATH}" || exit 1
 
 # 1. Foldseek search
+echo "1. Foldseek structural search"
 FOLDSEEK_RESULTS="${GIT_ROOT}/results/${RESULTS_PATH}/foldseek"
 mkdir "$FOLDSEEK_RESULTS" || exit 1
 cd "$DATABASE_PATH" || exit 1
@@ -52,36 +54,41 @@ cd - || exit 1
 
 
 # 2. Foldseek analysis
+echo "2. Foldseek structural search analysis"
 mkdir "$FOLDSEEK_RESULTS/analysis" || exit 1
 cd "$FOLDSEEK_RESULTS/analysis" || exit 1
 python3 "${GIT_ROOT}/src/analyzefoldseek.py" "$FOLDSEEK_RESULTS/alignment.tsv" > "$FOLDSEEK_RESULTS/analysis/analysis.log"
 cd - || exit 1
 
-# 3.1. MSA of aminoacid sequence
-# TODO: Cambiar creacion de fastas para usar fastas de databases e indices del output de foldseek
+# 3. MSA
+echo "3. MSA"
 MSA_RESULTS="${GIT_ROOT}/results/${RESULTS_PATH}/msa"
 mkdir "$MSA_RESULTS" || exit 1
 
+# 3.1. MSA of aminoacid sequence
+echo "3.1. Aminoacid-based MSA construction from Foldseek hits"
 python3 "${GIT_ROOT}/src/getfasta.py" "$FOLDSEEK_RESULTS/alignment.tsv" "$DATABASE_PATH/${DATABASE}.fasta" "$MSA_RESULTS/hits.aa.fasta"
 mafft "$MSA_RESULTS/hits.aa.fasta" 1> "$MSA_RESULTS/msa.aa.fasta" 2> "$MSA_RESULTS/msa.aa.log"
 python3 "${GIT_ROOT}/src/analyzemsa.py" "$MSA_RESULTS/msa.aa.fasta" "$MSA_RESULTS/msa.aa_consensus.fasta"
 
 # 3.2. MSA of structural sequence
+echo "3.2. 3di-based MSA construction from Foldseek hits"
 python3 "${GIT_ROOT}/src/getfasta.py" "$FOLDSEEK_RESULTS/alignment.tsv" "$DATABASE_PATH/${DATABASE}_ss.fasta" "$MSA_RESULTS/hits.3di.fasta"
 mafft --aamatrix "$GIT_ROOT/src/3di.mat" "$MSA_RESULTS/hits.3di.fasta" 1> "$MSA_RESULTS/msa.3di.fasta" 2> "$MSA_RESULTS/msa.3di.log"
 python3 "${GIT_ROOT}/src/analyzemsa.py" "$MSA_RESULTS/msa.3di.fasta" "$MSA_RESULTS/msa.3di_consensus.fasta"
 
 # 3.3. Convert 3di to aminoacids, and viceversa
+echo "3.3. Translation of 3di to aminoacid and viceversa"
 python3 "${GIT_ROOT}/src/translatefasta.py" "$MSA_RESULTS/msa.3di.fasta" "$DATABASE_PATH/${DATABASE}.fasta"  "$MSA_RESULTS/msa.3di_aa.fasta"
 python3 "${GIT_ROOT}/src/translatefasta.py" "$MSA_RESULTS/msa.aa.fasta" "$DATABASE_PATH/${DATABASE}_ss.fasta"  "$MSA_RESULTS/msa.aa_3di.fasta"
 python3 "${GIT_ROOT}/src/analyzemsa.py" "$MSA_RESULTS/msa.3di_aa.fasta" "$MSA_RESULTS/msa.3di2aa_consensus.fasta"
 python3 "${GIT_ROOT}/src/analyzemsa.py" "$MSA_RESULTS/msa.aa_3di.fasta" "$MSA_RESULTS/msa.aa23di_consensus.fasta"
 
-exit
 # 4. Tree construction and filtering
+echo "4. Tree construction and distance-based filtering"
 TREE_RESULTS="${GIT_ROOT}/results/${RESULTS_PATH}/tree"
 mkdir "$TREE_RESULTS" || exit 1
-python3 "${GIT_ROOT}/src/createtree.py" "$MSA_RESULTS/msa.aa.fasta" "$TREE_RESULTS/hits.nw" > "$TREE_RESULTS/tree.log"
+
 for SOURCE in aa 3di aa_3di 3di_aa;
 do
 	python3 "${GIT_ROOT}/src/createtree.py" "$MSA_RESULTS/msa.${SOURCE}.fasta" "$TREE_RESULTS/hits.${SOURCE}.nw" > "$TREE_RESULTS/tree.${SOURCE}.log"
@@ -89,6 +96,7 @@ do
 done
 
 # 5. Structural alignment
+echo "5. Structural alignment of representatives"
 # TODO: Implementar alineamiento estructural con TMalign y MOMA2 (via tmux)
 # TODO: Implementar alineamiento estructural con TMalign y MOMA2 (via tmux)
 # TODO: Implementar imprinting de informacion de MSA a sesiones de Pymol
