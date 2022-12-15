@@ -9,29 +9,35 @@ import matplotlib.pyplot as plt
 from Bio import SeqIO
 
 AA_PALETTE = [
-    "#C8C8C8",
-    "#145AFF",
-    "#00DCDC",
-    "#E60A0A",
-    "#E6E600",
-    "#00DCDC",
-    "#E60A0A",
-    "#EBEBEB",
-    "#8282D2",
-    "#0F820F",
-    "#0F820F",
-    "#145AFF",
-    "#E6E600",
-    "#3232AA",
-    "#DC9682",
-    "#FA9600",
-    "#FA9600",
-    "#B45AB4",
-    "#3232AA",
-    "#0F820F",
-    "#FFFFFF",
+    # Polar
+    "#FF8C26",  # N Asn
+    "#FF8C26",  # C Cys
+    "#FF8C26",  # Q Gln
+    "#FF8C26",  # P Pro
+    "#FF8C26",  # S Ser
+    "#FF8C26",  # T Thr
+    # Non-Polar
+    "#4D4DFF",  # A Ala
+    "#4D4DFF",  # G Gly
+    "#4D4DFF",  # I Ile
+    "#4D4DFF",  # L Leu
+    "#4D4DFF",  # M Met
+    "#4D4DFF",  # V Val
+    # Positive
+    "#33FF33",  # R Arg
+    "#33FF33",  # H His
+    "#33FF33",  # K Lys
+    # Negative
+    "#FF3737",  # D Asp
+    "#FF3737",  # E Glu
+    # Aromatic
+    "#FF7BFF",  # F Phe
+    "#FF7BFF",  # W Trp
+    "#FF7BFF",  # Y Tyr
+    "#FFFFFF",  # - Gap
 ]
-AA_LIST = "ARNDCQEGHILKMFPSTWYV-"
+AA_LIST = "NCQPSTAGILMVRHKDEFWY-"
+THRESHOLD = 0.3
 
 
 def getaafreq(msa):
@@ -56,6 +62,16 @@ def getconsensus(freq):
 
     return consensus
 
+def gethighlyconserved(freq):
+    L = len(freq)
+    N = sum(freq[0])
+    consensus = np.zeros(L)
+    for i in range(0, L):
+        c = freq[i].argmax()
+        consensus[i] = c if freq[i][c]/N > THRESHOLD else 20
+
+    return consensus
+
 
 def getconservation(freq, N):
     return np.sqrt(np.sum((np.square(freq / N - 0.05)), axis=1))
@@ -74,6 +90,7 @@ def main():
     # Calculate aa alignment metrics
     freqs = getaafreq(msa)
     consensus = getconsensus(freqs)
+    highlyconserved = gethighlyconserved(freqs)
     conservation = getconservation(freqs, N)
 
     # Save consensus sequence
@@ -84,28 +101,24 @@ def main():
         io.write(f"> Consensus\n{consensus_seq}")
 
     # Plot
-    _, ax = plt.subplots(nrows=2, figsize=(20, 4))
+    _, ax = plt.subplots(nrows=3, figsize=(int(L/100)*2, 6))
     ax[0].bar(
         range(0, L), conservation, align="edge", linewidth=0, color="black", width=1.0
     )
     ax[0].set_ylabel("Conservation")
     ax[0].set_xlim(0, len(consensus))
-    ax[0].set_xticks(
-        np.ceil(np.linspace(0, len(consensus), 10)).astype(int)
-    )
-    ax[0].set_xticklabels(
-        np.ceil(np.linspace(0, len(consensus), 10)).astype(int)
-    )
+    ax[0].set_xticks(np.ceil(np.linspace(0, len(consensus), 10)).astype(int))
+    ax[0].set_xticklabels(np.ceil(np.linspace(0, len(consensus), 10)).astype(int))
+    ax[0].axhline(THRESHOLD, color="red", ls=":")
+    ax[0].set_title(os.path.basename(sys.argv[1]))
 
     sns.heatmap(
         np.expand_dims(consensus, axis=0),
         cmap=AA_PALETTE,
-        cbar_kws=dict(
-            orientation="horizontal",
-            ticks=np.linspace(0, 20, 22) + 0.5,
-            label="Aminoacid",
-        ),
+        cbar=False,
         ax=ax[1],
+        vmin=0,
+        vmax=20,
     )
     ax[1].set_yticklabels(["Consensus"])
     ax[1].set_xticks(
@@ -114,10 +127,33 @@ def main():
     ax[1].set_xticklabels(
         np.ceil(np.linspace(0, len(consensus), 10)).astype(int),
     )
-    ax[1].collections[0].colorbar.ax.set_xticklabels(AA_LIST + " ")
-    ax[0].set_title(os.path.basename(sys.argv[1]))
 
-    plt.savefig(f"{output_path}/msa.conservation_{str(time.time()).split('.')[0]}.pdf", dpi=300)
+    sns.heatmap(
+        np.expand_dims(highlyconserved, axis=0),
+        cmap=AA_PALETTE,
+        cbar_kws=dict(
+            ticks=np.linspace(0, 20, 22) + 0.5,
+            label="Aminoacid",
+            use_gridspec=False,
+            location="bottom"
+        ),
+        vmin=0,
+        vmax=20,
+        ax=ax[2],
+    )
+    ax[2].set_yticklabels(["Conserved"])
+    ax[2].set_xticks(
+       np.ceil(np.linspace(0, len(consensus), 10)).astype(int),
+    )
+    ax[2].set_xticklabels(
+       np.ceil(np.linspace(0, len(consensus), 10)).astype(int),
+    )
+    ax[2].collections[0].colorbar.ax.set_xticklabels(AA_LIST + " ")
+
+    # plt.tight_layout()
+    plt.savefig(
+        f"{output_path}/msa.conservation_{str(time.time()).split('.')[0]}.pdf", dpi=300
+    )
 
 
 if __name__ == "__main__":

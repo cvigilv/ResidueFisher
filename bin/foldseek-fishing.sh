@@ -37,12 +37,13 @@ foldseek createdb "$QUERY_PATH" "$QUERY" --chain-name-mode 1 &> "$FOLDSEEK_RESUL
 foldseek search "$QUERY" "$DATABASE" "$FOLDSEEK_RESULTS/alignment" /tmp \
   -e 0.001 \
   -s 6 \
-  -k 7 \
+  -k 6 \
   --tmscore-threshold 0 \
   -a \
-  --cov-mode 2 \
-  -c 0.5 \
   --max-seqs 100000 &> "$FOLDSEEK_RESULTS/alignment.log"
+  # --cov-mode 2 \
+  # -c 0.5 \
+  # --max-seqs 100000 &> "$FOLDSEEK_RESULTS/alignment.log"
 foldseek convertalis "$QUERY" "$DATABASE" \
   "$FOLDSEEK_RESULTS/alignment" \
   "$FOLDSEEK_RESULTS/alignment.tsv" \
