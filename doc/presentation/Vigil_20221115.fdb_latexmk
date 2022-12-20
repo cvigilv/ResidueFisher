@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1668460289 "Vigil_20221115.tex" "Vigil_20221115.pdf" "Vigil_20221115" 1668460292
+["pdflatex"] 1671536478 "Vigil_20221115.tex" "Vigil_20221115.pdf" "Vigil_20221115" 1671536480
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1650183167 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1650183167 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1650183167 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -207,10 +207,10 @@
   "/usr/share/texmf-dist/tex/latex/url/url.sty" 1650183167 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "/usr/share/texmf-dist/tex/latex/xcolor/xcolor.sty" 1650183167 56029 3f7889dab51d620aa43177c391b7b190 ""
   "/usr/share/texmf-dist/web2c/texmf.cnf" 1650183167 39911 2da6c67557ec033436fe5418a70a8a61 ""
-  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1666539186 4278762 af3ac1370db81a450c1118eabf1fe718 ""
-  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1666539169 2927666 9174f4e7763d8c854aefb20a9dfe536a ""
-  "Vigil_20221115.aux" 1668460292 3298 960f49ca38dbcc2fe4cba43cf63725e5 "pdflatex"
-  "Vigil_20221115.nav" 1668460292 1873 d3106d4dac5a870f0f30383d79ad381f "pdflatex"
+  "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1668705933 4278762 af3ac1370db81a450c1118eabf1fe718 ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1668705924 2927664 08f91010b8ced776bcd8b1ac9d5e4fee ""
+  "Vigil_20221115.aux" 1671536480 3298 960f49ca38dbcc2fe4cba43cf63725e5 "pdflatex"
+  "Vigil_20221115.nav" 1671536480 1873 d3106d4dac5a870f0f30383d79ad381f "pdflatex"
   "Vigil_20221115.out" 0 -1 0 "pdflatex"
   "Vigil_20221115.tex" 1668460288 5452 9cadf2d9f859f38c43a313790ca75ffd ""
   "figures/ACE1_example.png" 1668458832 536875 e40f0dd6f563160293b6324e6470b950 ""
