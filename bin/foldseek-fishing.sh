@@ -10,7 +10,7 @@
 
 # Constants
 GIT_ROOT=$(git rev-parse --show-toplevel)
-# PDBS_PATH="${GIT_ROOT}/data/pdbs/"
+PDBS_PATH="${GIT_ROOT}/data/pdbs/"
 DATABASE_PATH="${GIT_ROOT}/data/foldseek_dbs"
 
 if [[ -z $1 || $# -lt 2 || $# -ge 3 ]]; then
@@ -97,8 +97,8 @@ done
 
 # 5. Structural alignment
 echo "5. Structural alignment of representatives"
-# TODO: Implementar alineamiento estructural con TMalign y MOMA2 (via tmux)
-# TODO: Implementar alineamiento estructural con TMalign y MOMA2 (via tmux)
+python3 "${GIT_ROOT}/src/getpdbs.py" "$TREE_RESULTS/pruned_tree.*" "$PDBS_PATH"
+# TODO: Implementar alineamiento estructural con MOMA2 (via tmux)
 # TODO: Implementar imprinting de informacion de MSA a sesiones de Pymol
 
 # Cleanup
