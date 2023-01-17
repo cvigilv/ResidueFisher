@@ -13,7 +13,10 @@
 ## Dependencies
 
 `foldseek-fishing` depends on:
+- conda
+- docker
 - mafft
+- tmux
 
 ## Installation
 
