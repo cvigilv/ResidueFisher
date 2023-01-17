@@ -24,9 +24,18 @@ mkdir {data,results}
 ## Usage
 ### Database preparation
 
-Please refer to [foldseek tutorial](https://github.com/steineggerlab/foldseek#databases) in order to prepare and/or download databases.
+To prepare a database using Foldseek, run the script `bin/prep_database.sh` script as follows:
 
-In order for `foldseek-fishing- to work correctly, databases must be inside a directory named `data` in the proyect root.
+```sh
+sh bin/prep_database.sh <FOLDSEEK-DATABASE-NAME> <INTERNAL-DATABASE-NAME>
+
+# Example
+sh bin/prep_database.sh PDB mypdb
+```
+
+To prepare a database from PDB files, please refer to [foldseek tutorial](https://github.com/steineggerlab/foldseek#databases).
+
+In order for `foldseek-fishing` to work correctly, databases must be inside a directory named `data/foldseek_dbs` in the proyect root.
 
 ### Foldseek-fishing Usage
 
