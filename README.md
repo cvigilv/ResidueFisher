@@ -4,14 +4,20 @@
 
 ## Table of Contents
 
+- [Dependencies](#dependencies)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Support](#support)
 - [Contributing](#contributing)
 
+## Dependencies
+
+`foldseek-fishing` depends on:
+- mafft
+
 ## Installation
 
-Instalation instructions.
+To install `foldseek-fishing`, run the following code snippet:
 
 ```sh
 git clone https://github.com/cvigilv/foldseek-fishing
