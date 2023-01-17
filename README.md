@@ -21,14 +21,12 @@
 ## Installation
 
 To install `foldseek-fishing`, run the following code snippet:
-
 ```sh
 git clone https://github.com/cvigilv/foldseek-fishing
 cd foldseek-fishing
-conda env create -f conda_env.yml
-docker pull fggutierrez2018/moma2:latest
-mkdir {data,results}
+make configure
 ```
+In order to use `foldseek-fishing`, que conda environment must be active (`conda activate foldseek-fishing`)
 
 ## Usage
 ### Database preparation
