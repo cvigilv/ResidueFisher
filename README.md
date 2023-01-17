@@ -39,9 +39,23 @@ In order for `foldseek-fishing` to work correctly, databases must be inside a di
 
 ### Foldseek-fishing Usage
 
+To use foldseek-fishing, run the script `bin/foldseek-fishing.sh` script as follows:
 ```sh
+sh bin/foldseek-fishing.sh <PDB-FILE> <INTERNAL-DATABASE-NAME>
 
+# Example
+sh bin/foldseek-fishing.sh 3F3P_C.pdb mypdb
 ```
+
+This will generate a folder in `results` with the following structure:
+```
+results/3F3PC_pdb/
+├── foldseek/
+├── msa/
+└── tree/
+```
+
+Inside each subdirectory, log files and result can be found in order to analyse and study the protein used in the protocol.
 
 ## Support
 
