@@ -2,6 +2,7 @@
 
 import os
 import sys
+import requests
 
 from ete3 import Tree
 from multiprocessing import Pool
@@ -49,7 +50,9 @@ def downloadstructure(hit):
             run_splitting = True
 
         print(f"curl {model_url} -o {sys.argv[2]}/{hit}")
-        os.system(f"curl {model_url} -o {sys.argv[2]}/{hit}")
+        response = requests.get(model_url)
+        with open(f'{sys.argv[2]}/{hit}', 'wb') as f:
+            f.write(response.content)
 
         if run_splitting:
             splitchains(f"{sys.argv[2]}/{hit}")
