@@ -8,6 +8,7 @@ from ete3 import Tree
 from multiprocessing import Pool
 from glob import glob
 from pymol import cmd
+from requests.models import HTTPError
 
 AF_DB_VERSION = "v4"
 
@@ -41,17 +42,23 @@ def downloadstructure(hit):
     run_splitting = False
     availablepdbs = [os.path.basename(pdb) for pdb in glob(sys.argv[2] + "/*.pdb")]
     if f"{hit}.pdb" not in availablepdbs:
+        print(f"Downloading and processing {hit}")
         if "AF-" in hit:
-            hit = hit.strip('.gz')
+            hit = hit.strip(".gz")
             model_url = f"https://alphafold.ebi.ac.uk/files/{hit.strip('.gz')}"
+            response = requests.get(model_url)
         else:
-            hit = hit.split("_")[0]+".pdb"
-            model_url = f"https://files.rcsb.org/download/{hit}"
             run_splitting = True
+            hit = hit.split("_")[0] + ".pdb"
+            model_url = f"https://files.rcsb.org/download/{hit}"
 
-        print(f"curl {model_url} -o {sys.argv[2]}/{hit}")
-        response = requests.get(model_url)
-        with open(f'{sys.argv[2]}/{hit}', 'wb') as f:
+            try:
+                response = requests.get(model_url)
+                response.raise_for_status()
+            except HTTPError:
+                response = requests.get(model_url.replace(".pdb", ".cif"))
+
+        with open(f"{sys.argv[2]}/{hit}", "wb") as f:
             f.write(response.content)
 
         if run_splitting:

@@ -10,7 +10,7 @@
 
 # Constants
 GIT_ROOT=$(git rev-parse --show-toplevel)
-PDBS_PATH="${GIT_ROOT}/data/pdbs/"
+PDBS_PATH="${GIT_ROOT}/data/pdbs"
 DATABASE_PATH="${GIT_ROOT}/data/foldseek_dbs"
 
 if [[ -z $1 || $# -lt 2 || $# -ge 3 ]]; then
@@ -97,7 +97,17 @@ done
 
 # 5. Structural alignment
 echo "5. Structural alignment of representatives"
+mkdir -p "$RESULTS_PATH/moma/{input,output}" || exit 1
+
+echo "5.1. Download representative structures"
 python3 "${GIT_ROOT}/src/getpdbs.py" "$TREE_RESULTS/pruned_tree.*" "$PDBS_PATH"
+
+echo "5.2. MOMA alignment"
+python3 "${GIT_ROOT}/src/movepdbs.py" "$TREE_RESULTS/pruned_tree.*" "$RESULTS_PATH/moma/input"
+tmux new-session -d -s "$QUERY"
+tmux rename-window -t "$QUERY:1" 'moma'
+tmux send-keys -t "$QUERY:1" "docker run -it -v $RESULTS_PATH:/home/momatools/data/ fggutierrez2018/moma2" C-m
+
 # TODO: Implementar alineamiento estructural con MOMA2 (via tmux)
 # TODO: Implementar imprinting de informacion de MSA a sesiones de Pymol
 
