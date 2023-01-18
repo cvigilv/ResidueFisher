@@ -27,15 +27,15 @@ def main():
         treehits = {leaf.name for leaf in T.get_leaves()}
         allhits.update(treehits)
 
-    print(allhits)
-
     allpdbs = glob(source + '/*.pdb')
-    for hit in allhits:
-        pattern = f"{source}/{hit[0:4]}_{hit[5:].upper()}.pdb"
-        # pattern2 = insensitive_glob(pattern)
-        print(pattern, "->", difflib.get_close_matches(pattern, allpdbs))
-        # shutil.copy2(pattern2[0], f"{target}/{hit}.pdb")
-
+    for hit in sorted(allhits):
+        print(hit)
+        try:
+            shutil.copy2(f"{source}/{hit}.pdb", f"{target}/{hit}.pdb")
+        except FileNotFoundError:
+            pattern = f"{source}/{hit[0:4]}_{hit[5:].upper()}"
+            closest = difflib.get_close_matches(pattern, allpdbs, n=1)[0]
+            shutil.copy2(closest, f"{target}/{hit}.pdb")
 
 if __name__ == "__main__":
     main()
