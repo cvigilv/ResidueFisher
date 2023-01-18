@@ -117,7 +117,6 @@ dependencies:
   - sqlite=3.40.0=h5082296_0
   - t_coffee=11.00=h99d273f_0
   - tk=8.6.12=h1ccaba5_0
-  - tmux=3.3=h385fc29_0
   - trimal=1.4=h87cb4c3_0
   - tzdata=2022g=h04d1e81_0
   - urllib3=1.26.8=pyhd3eb1b0_0
