@@ -22,13 +22,11 @@ def splitchains(pdb):
     cmd.remove("HETATM")
 
     # Split chains
+    org_pdb = cmd.get_object_list()[0]
     cmd.split_chains()
 
     # Remove original structure
-    if os.path.basename(pdb) == "cif":
-        cmd.remove(os.path.basename(pdb).replace(".cif", ""))
-    else:
-        cmd.remove(os.path.basename(pdb).replace(".pdb", ""))
+    cmd.remove(org_pdb)
 
     # Save chains as new pdb structures
     for chain in list(cmd.get_object_list()):
@@ -40,8 +38,9 @@ def splitchains(pdb):
 
 def downloadstructure(hit):
     run_splitting = False
-    availablepdbs = [os.path.basename(pdb) for pdb in glob(sys.argv[2] + "/*.pdb")]
-    if f"{hit}.pdb" not in availablepdbs:
+    availablepdbs = [os.path.basename(pdb).strip(".pdb").strip(".cif") for pdb in glob(sys.argv[2] + "/*")]
+    print(availablepdbs, list(glob(sys.argv[2]+"/*")))
+    if hit not in availablepdbs or f"{hit[0:5]+hit[5:].upper()}" not in availablepdbs:
         print(f"Downloading and processing {hit}")
         if "AF-" in hit:
             hit = hit.strip(".gz")
@@ -49,14 +48,16 @@ def downloadstructure(hit):
             response = requests.get(model_url)
         else:
             run_splitting = True
-            hit = hit.split("_")[0] + ".pdb"
-            model_url = f"https://files.rcsb.org/download/{hit}"
 
             try:
+                hit = hit.split("_")[0] + ".pdb"
+                model_url = f"https://files.rcsb.org/download/{hit}"
                 response = requests.get(model_url)
                 response.raise_for_status()
             except HTTPError:
-                response = requests.get(model_url.replace(".pdb", ".cif"))
+                hit = hit.replace(".pdb", ".cif")
+                model_url = f"https://files.rcsb.org/download/{hit}"
+                response = requests.get(model_url)
 
         with open(f"{sys.argv[2]}/{hit}", "wb") as f:
             f.write(response.content)
