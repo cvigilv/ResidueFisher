@@ -39,7 +39,6 @@ def splitchains(pdb):
 def downloadstructure(hit):
     run_splitting = False
     availablepdbs = [os.path.basename(pdb).strip(".pdb").strip(".cif") for pdb in glob(sys.argv[2] + "/*")]
-    print(availablepdbs, list(glob(sys.argv[2]+"/*")))
     if hit not in availablepdbs or f"{hit[0:5]+hit[5:].upper()}" not in availablepdbs:
         print(f"Downloading and processing {hit}")
         if "AF-" in hit:
