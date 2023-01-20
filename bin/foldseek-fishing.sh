@@ -97,7 +97,7 @@ done
 
 # 5. Structural alignment
 echo "5. Structural alignment of representatives"
-mkdir -p ${GIT_ROOT}/results/$RESULTS_PATH/moma/{input,output} || exit 1
+mkdir -p ${GIT_ROOT}/results/${RESULTS_PATH}/moma/{input,output} || exit 1
 
 echo "5.1. Download representative structures"
 python3 "${GIT_ROOT}/src/getpdbs.py" "$TREE_RESULTS/pruned_tree.*" "$PDBS_PATH"

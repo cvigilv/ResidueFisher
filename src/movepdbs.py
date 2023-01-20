@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 
-import sys
 import shutil
+import sys
+from glob import glob
 
 from ete3 import Tree
-from glob import glob
-import difflib
+
 
 def insensitive_glob(pattern):
     def either(c):
-        return '[%s%s]' % (c.lower(), c.upper()) if c.isalpha() else c
-    return glob(''.join(map(either, pattern)))
+        return "[%s%s]" % (c.lower(), c.upper()) if c.isalpha() else c
+
+    return glob("".join(map(either, pattern)))
+
 
 def main():
     print("movepdbs.py")
@@ -20,6 +22,8 @@ def main():
     source = sys.argv[2]
     target = sys.argv[3]
 
+    print(trees, source, target)
+
     allhits = set()
     for treepath in trees:
         treestring = open(treepath, "r").read().replace("\n", "")
@@ -27,15 +31,11 @@ def main():
         treehits = {leaf.name for leaf in T.get_leaves()}
         allhits.update(treehits)
 
-    allpdbs = glob(source + '/*.pdb')
-    for hit in sorted(allhits):
-        print(hit)
-        try:
-            shutil.copy2(f"{source}/{hit}.pdb", f"{target}/{hit}.pdb")
-        except FileNotFoundError:
-            pattern = f"{source}/{hit[0:4]}_{hit[5:].upper()}"
-            closest = difflib.get_close_matches(pattern, allpdbs, n=1)[0]
-            shutil.copy2(closest, f"{target}/{hit}.pdb")
+    with open(f"{target}/hits.txt", "w") as io:
+        io.write("\n".join(allhits))
+
+    for hit in allhits:
+        shutil.copy2(f"{source}/{hit[0:4]}.pdb", f"{target}/{hit[0:4]}.pdb")
 
 if __name__ == "__main__":
     main()
