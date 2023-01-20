@@ -2,15 +2,29 @@
 
 import os
 import sys
-import requests
-
-from ete3 import Tree
-from multiprocessing import Pool
 from glob import glob
+from multiprocessing import Pool
+
+import requests
+from ete3 import Tree
 from pymol import cmd
 from requests.models import HTTPError
 
 AF_DB_VERSION = "v4"
+
+
+def cif2pdb(pdb):
+    try:
+        # Load structure
+        cmd.load(pdb, os.path.basename(pdb))
+        cmd.save(pdb.replace(".cif", ".pdb"), os.path.basename(pdb))
+    except:
+        print("ERROR:", pdb, "failed")
+    finally:
+        pass
+
+    # Restart Pymol after processing
+    cmd.reinitialize()
 
 
 def splitchains(pdb):
@@ -32,38 +46,41 @@ def splitchains(pdb):
     for chain in list(cmd.get_object_list()):
         cmd.save(os.path.dirname(pdb) + "/" + chain + ".pdb", chain)
 
-    # Restart Pymol after processing
+    # Restart PyMOL after processing
     cmd.reinitialize()
 
 
 def downloadstructure(hit):
-    run_splitting = False
-    availablepdbs = [os.path.basename(pdb).strip(".pdb").strip(".cif") for pdb in glob(sys.argv[2] + "/*")]
-    print(availablepdbs, list(glob(sys.argv[2]+"/*")))
-    if hit not in availablepdbs or f"{hit[0:5]+hit[5:].upper()}" not in availablepdbs:
+    availablepdbs = [
+        os.path.basename(pdb).lower() for pdb in glob(sys.argv[2] + "/*.pdb")
+    ]
+    if hit[0:4].lower() + ".pdb" not in availablepdbs:
+        iscif = False
+
         print(f"Downloading and processing {hit}")
         if "AF-" in hit:
+            # Download PDB file of AlphaFold model
             hit = hit.strip(".gz")
             model_url = f"https://alphafold.ebi.ac.uk/files/{hit.strip('.gz')}"
             response = requests.get(model_url)
         else:
-            run_splitting = True
-
+            # Download PDB or CIF file for hit structure
             try:
                 hit = hit.split("_")[0] + ".pdb"
-                model_url = f"https://files.rcsb.org/download/{hit}"
-                response = requests.get(model_url)
+                response = requests.get(f"https://files.rcsb.org/download/{hit}")
                 response.raise_for_status()
             except HTTPError:
                 hit = hit.replace(".pdb", ".cif")
-                model_url = f"https://files.rcsb.org/download/{hit}"
-                response = requests.get(model_url)
+                response = requests.get(f"https://files.rcsb.org/download/{hit}")
+                iscif = True
 
         with open(f"{sys.argv[2]}/{hit}", "wb") as f:
             f.write(response.content)
 
-        if run_splitting:
-            splitchains(f"{sys.argv[2]}/{hit}")
+        # Convert CIF files to PDB spec
+        if iscif:
+            cif2pdb(f"{sys.argv[2]}/{hit}")
+
     else:
         print(f"{hit} already downloaded and processed")
 
