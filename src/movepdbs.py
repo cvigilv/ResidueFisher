@@ -22,8 +22,6 @@ def main():
     source = sys.argv[2]
     target = sys.argv[3]
 
-    print(trees, source, target)
-
     allhits = set()
     for treepath in trees:
         treestring = open(treepath, "r").read().replace("\n", "")
