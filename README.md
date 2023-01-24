@@ -61,6 +61,7 @@ cd data/queries
 wget https://files.rcsb.org/download/3F3P.pdb
 python ../../src/scripts/splitchains.py 3F3P.pdb
 ```
+From this example, a total of 13 should be found inside the `data/queries` folder: 1 for the original structure and 12 corresponding to the chains A through L of 3F3P.
 
 
 ### Foldseek-fishing Usage
