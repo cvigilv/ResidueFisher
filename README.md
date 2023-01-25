@@ -25,6 +25,7 @@ To install `foldseek-fishing`, run the following code snippet:
 git clone https://github.com/cvigilv/foldseek-fishing
 cd foldseek-fishing
 make configure
+conda activate foldseek-fishing
 ```
 In order to use `foldseek-fishing`, que conda environment must be active (`conda activate foldseek-fishing`)
 
