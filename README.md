@@ -42,9 +42,12 @@ sh bin/prep_database.sh PDB mypdb
 ```
 To see the available datasets, run `bin/prep_database.sh` without arguments.
 
-To prepare a database from PDB files, please refer to [foldseek tutorial](https://github.com/steineggerlab/foldseek#databases).
-
-In order for `foldseek-fishing` to work correctly, databases must be inside a directory named `data/foldseek_dbs` in the proyect root.
+To prepare a database from PDB files, please refer to [foldseek tutorial](https://github.com/steineggerlab/foldseek#databases). In order for `foldseek-fishing` to work correctly, user created databases must be inside a directory named `data/foldseek_dbs` in the proyect root and must contain FASTA files for the aminoacid sequence and 3di sequence, which can be created as follows:
+```sh
+foldseek convert2fasta <USER-DB-NAME> <USER-DB-NAME>.fasta
+foldseek lndb <USER-DB-NAME>_h <USER-DB-NAME>_ss_h
+foldseek convert2fasta <USER-DB-NAME>_ss <USER-DB-NAME>_ss.fasta
+```
 
 ### Query protein preparation
 Unlike Foldseek, this protocol is intended to study a single protein chain; therefore, in order to use foldseek-fishing, one must first extract this from its original PDB file.
