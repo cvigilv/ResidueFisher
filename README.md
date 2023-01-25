@@ -13,6 +13,7 @@
 ## Dependencies
 
 `foldseek-fishing` depends on:
+- bash
 - conda
 - docker
 - mafft
