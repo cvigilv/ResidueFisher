@@ -40,6 +40,7 @@ sh bin/prep_database.sh <FOLDSEEK-DATABASE-NAME> <INTERNAL-DATABASE-NAME>
 # Example preparation of PDB dataset available in Foldseek
 sh bin/prep_database.sh PDB mypdb
 ```
+To see the available datasets, run `bin/prep_database.sh` without arguments.
 
 To prepare a database from PDB files, please refer to [foldseek tutorial](https://github.com/steineggerlab/foldseek#databases).
 
