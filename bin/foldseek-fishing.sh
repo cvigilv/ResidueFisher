@@ -107,9 +107,9 @@ echo "5.2. Collecting all structures"
 python3 "${GIT_ROOT}/src/movepdbs.py" "$TREE_RESULTS/pruned_tree.*" "$PDBS_PATH" "$GIT_ROOT/results/$RESULTS_PATH/moma/input"
 
 tmux new-session -d -s "$QUERY"
-tmux rename-window -t "$QUERY:1" 'moma'
-tmux send-keys -t "$QUERY:1" "docker run -it -v $GIT_ROOT/results/$RESULTS_PATH/moma/:/home/momatools/data/ fggutierrez2018/moma2" C-m
-tmux send-keys -t "$QUERY:1" "cd /home/momatools/src" C-m
+tmux rename-window -t "$QUERY:0" 'moma'
+tmux send-keys -t "$QUERY:0" "docker run -it -v $GIT_ROOT/results/$RESULTS_PATH/moma/:/home/momatools/data/ fggutierrez2018/moma2" C-m
+tmux send-keys -t "$QUERY:0" "cd /home/momatools/src" C-m
 
 while read HIT_CHAIN; do
 	HIT_PDB=$(echo $HIT_CHAIN | cut -d'_' -f1)
@@ -119,8 +119,8 @@ while read HIT_CHAIN; do
 	PAIR="${QUERY_PDB}${QUERY_CHAIN}_${HIT_PDB}$HIT_CHAIN"
 	echo $PAIR
 
-	tmux send-keys -t "$QUERY:1" "python /home/momatools/src/MOMA2_pw.py -q /home/momatools/data/input/${QUERY_PDB}.pdb -t /home/momatools/data/input/${HIT_PDB}.pdb --cq $QUERY_CHAIN --ct $HIT_CHAIN -s both" C-m
-	tmux send-keys -t "$QUERY:1" "python /home/momatools/src/generate_p1m.py /home/momatools/data/output/pairwise_alignments/${PAIR}_both" C-m
+	tmux send-keys -t "$QUERY:0" "python /home/momatools/src/MOMA2_pw.py -q /home/momatools/data/input/${QUERY_PDB}.pdb -t /home/momatools/data/input/${HIT_PDB}.pdb --cq $QUERY_CHAIN --ct $HIT_CHAIN -s both" C-m
+	tmux send-keys -t "$QUERY:0" "python /home/momatools/src/generate_p1m.py /home/momatools/data/output/pairwise_alignments/${PAIR}_both" C-m
 done<$GIT_ROOT/results/$RESULTS_PATH/moma/input/hits.txt
 tmux attach -t "$QUERY"
 # TODO: Implementar imprinting de informacion de MSA a sesiones de Pymol
