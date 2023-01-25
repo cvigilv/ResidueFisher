@@ -93,8 +93,7 @@ support.
 
 ## Contributing
 
-Please contribute using [Github Flow]
-(https://guides.github.com/introduction/flow/). Create a branch, add
+Please contribute using [Github Flow](https://guides.github.com/introduction/flow/). Create a branch, add
 commits, and [open a pull request](https://github.com/cvigilv/foldseek-fishing/compare/).
 
 ## License
