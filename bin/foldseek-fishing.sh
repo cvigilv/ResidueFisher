@@ -97,7 +97,7 @@ done
 
 # 5. Structural alignment
 echo "5. Structural alignment of representatives"
-mkdir -p ${GIT_ROOT}/results/${RESULTS_PATH}/moma/{input,output} || exit 1
+mkdir -p "${GIT_ROOT}"/results/"${RESULTS_PATH}"/moma/{input,output} || exit 1
 
 echo "5.1. Download representative structures"
 python3 "${GIT_ROOT}/src/getpdbs.py" "$TREE_RESULTS/pruned_tree.*" "$PDBS_PATH"
@@ -111,19 +111,19 @@ tmux rename-window -t "$QUERY:0" 'moma'
 tmux send-keys -t "$QUERY:0" "docker run -it -v $GIT_ROOT/results/$RESULTS_PATH/moma/:/home/momatools/data/ fggutierrez2018/moma2" C-m
 tmux send-keys -t "$QUERY:0" "cd /home/momatools/src" C-m
 
-while read HIT_CHAIN; do
-	HIT_PDB=$(echo $HIT_CHAIN | cut -d'_' -f1)
-	HIT_CHAIN=$(echo $HIT_CHAIN | cut -d'_' -f2)
-	QUERY_PDB=$(basename ${QUERY_PATH//.pdb/}| cut -d'_' -f1)
-	QUERY_CHAIN=$(basename ${QUERY_PATH//.pdb/} | cut -d'_' -f2)
+while read -r HIT_CHAIN; do
+	HIT_PDB=$(echo "$HIT_CHAIN" | cut -d'_' -f1)
+	HIT_CHAIN=$(echo "$HIT_CHAIN" | cut -d'_' -f2)
+	QUERY_PDB=$(basename "${QUERY_PATH//.pdb/}"| cut -d'_' -f1)
+	QUERY_CHAIN=$(basename "${QUERY_PATH//.pdb/}" | cut -d'_' -f2)
 	PAIR="${QUERY_PDB}${QUERY_CHAIN}_${HIT_PDB}$HIT_CHAIN"
-	echo $PAIR
+	echo "$PAIR"
 
 	tmux send-keys -t "$QUERY:0" "python /home/momatools/src/MOMA2_pw.py -q /home/momatools/data/input/${QUERY_PDB}.pdb -t /home/momatools/data/input/${HIT_PDB}.pdb --cq $QUERY_CHAIN --ct $HIT_CHAIN -s both" C-m
 	tmux send-keys -t "$QUERY:0" "python /home/momatools/src/generate_p1m.py /home/momatools/data/output/pairwise_alignments/${PAIR}_both" C-m
-done<$GIT_ROOT/results/$RESULTS_PATH/moma/input/hits.txt
+done<"$GIT_ROOT"/results/"$RESULTS_PATH"/moma/input/hits.txt
 tmux attach -t "$QUERY"
 # TODO: Implementar imprinting de informacion de MSA a sesiones de Pymol
 
 # Cleanup
-rm ${DATABASE_PATH}/${QUERY}*
+rm "${DATABASE_PATH}"/"${QUERY}"*
