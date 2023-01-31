@@ -8,6 +8,8 @@
 #copyright       :Copyright (C) 2022 Carlos Vigil Vásquez (cvigil2@uc.cl)
 #license         :Permission to copy and modify is granted under the MIT license
 
+set -o errexit
+
 # Constants
 GIT_ROOT=$(git rev-parse --show-toplevel)
 PDBS_PATH="${GIT_ROOT}/data/pdbs"
