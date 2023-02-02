@@ -84,12 +84,18 @@ cat "${GIT_ROOT}/data/foldseek_dbs/${QUERY}_ss.fasta" "/tmp/hits.3di.fasta" > "$
 mafft --aamatrix "$GIT_ROOT/src/3di.mat" "$MSA_RESULTS/hits.3di.fasta" 1> "$MSA_RESULTS/msa.3di.fasta" 2> "$MSA_RESULTS/msa.3di.log"
 python3 "${GIT_ROOT}/src/analyzemsa.py" "$MSA_RESULTS/msa.3di.fasta" "$MSA_RESULTS/msa.3di_consensus.fasta"
 
-
-
-
-
-
-
+# 3.4. Imprint MSA conservation to query structure
+cd "$(dirname $QUERY_PATH)"
+for SOURCE in aa 3di;
+do
+	python3 "${GIT_ROOT}/src/conservationimprinting.py" \
+		"$(basename $QUERY_PATH)" \
+		"$MSA_RESULTS/msa.$SOURCE.fasta" \
+		"$MSA_RESULTS/msa.${SOURCE}_consensus.fasta" \
+		"$MSA_RESULTS/msa.${SOURCE}_consensus.fasta_conservation" \
+		"$MSA_RESULTS/${QUERY}.${SOURCE}_conservation.pse"
+done
+cd -
 
 # 4. Tree construction and filtering
 echo "4. Tree construction and distance-based filtering"

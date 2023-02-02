@@ -100,6 +100,9 @@ def main():
     with open(sys.argv[2], "w+") as io:
         io.write(f"> Consensus\n{consensus_seq}")
 
+    with open(sys.argv[2] + "_conservation", "w+") as io:
+        io.write(f"> Consensus\n{','.join(np.round(conservation, 2).astype(str))}")
+
     # Plot
     _, ax = plt.subplots(nrows=3, figsize=(int(L/100)*2, 6))
     ax[0].bar(
