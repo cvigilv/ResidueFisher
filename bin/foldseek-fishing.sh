@@ -37,7 +37,13 @@ FOLDSEEK_RESULTS="${GIT_ROOT}/results/${RESULTS_PATH}/foldseek"
 mkdir "$FOLDSEEK_RESULTS" || exit 1
 cd "$DATABASE_PATH" || exit 1
 
+# 1.1 Prepare query structure database
 foldseek createdb "$QUERY_PATH" "$QUERY" --chain-name-mode 1 &> "$FOLDSEEK_RESULTS/alignment.log"
+foldseek convert2fasta "${QUERY}" "${QUERY}.fasta" &> "$FOLDSEEK_RESULTS/alignment.log"
+foldseek lndb "${QUERY}_h" "${QUERY}_ss_h" &> "$FOLDSEEK_RESULTS/alignment.log"
+foldseek convert2fasta "${QUERY}_ss" "${QUERY}_ss.fasta" &> "$FOLDSEEK_RESULTS/alignment.log"
+
+# 1.2 Structural search with Foldseek
 foldseek search "$QUERY" "$DATABASE" "$FOLDSEEK_RESULTS/alignment" /tmp \
   -e 0.001 \
   -s 6 \
