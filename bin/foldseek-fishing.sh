@@ -72,13 +72,15 @@ mkdir "$MSA_RESULTS" || exit 1
 
 # 3.1. MSA of aminoacid sequence
 echo "3.1. Aminoacid-based MSA construction from Foldseek hits"
-python3 "${GIT_ROOT}/src/getfasta.py" "$FOLDSEEK_RESULTS/alignment.tsv" "$DATABASE_PATH/${DATABASE}.fasta" "$MSA_RESULTS/hits.aa.fasta"
+python3 "${GIT_ROOT}/src/getfasta.py" "$FOLDSEEK_RESULTS/alignment.tsv" "$DATABASE_PATH/${DATABASE}.fasta" "/tmp/hits.aa.fasta"
+cat "${GIT_ROOT}/data/foldseek_dbs/${QUERY}.fasta" "/tmp/hits.aa.fasta" > "$MSA_RESULTS/hits.aa.fasta"
 mafft "$MSA_RESULTS/hits.aa.fasta" 1> "$MSA_RESULTS/msa.aa.fasta" 2> "$MSA_RESULTS/msa.aa.log"
 python3 "${GIT_ROOT}/src/analyzemsa.py" "$MSA_RESULTS/msa.aa.fasta" "$MSA_RESULTS/msa.aa_consensus.fasta"
 
 # 3.2. MSA of structural sequence
 echo "3.2. 3di-based MSA construction from Foldseek hits"
-python3 "${GIT_ROOT}/src/getfasta.py" "$FOLDSEEK_RESULTS/alignment.tsv" "$DATABASE_PATH/${DATABASE}_ss.fasta" "$MSA_RESULTS/hits.3di.fasta"
+python3 "${GIT_ROOT}/src/getfasta.py" "$FOLDSEEK_RESULTS/alignment.tsv" "$DATABASE_PATH/${DATABASE}_ss.fasta" "/tmp/hits.3di.fasta"
+cat "${GIT_ROOT}/data/foldseek_dbs/${QUERY}_ss.fasta" "/tmp/hits.3di.fasta" > "$MSA_RESULTS/hits.3di.fasta"
 mafft --aamatrix "$GIT_ROOT/src/3di.mat" "$MSA_RESULTS/hits.3di.fasta" 1> "$MSA_RESULTS/msa.3di.fasta" 2> "$MSA_RESULTS/msa.3di.log"
 python3 "${GIT_ROOT}/src/analyzemsa.py" "$MSA_RESULTS/msa.3di.fasta" "$MSA_RESULTS/msa.3di_consensus.fasta"
 
