@@ -2,8 +2,8 @@
 #title           :foldseek-fishing.sh
 #description     :Find structural and sequence information for PDB
 #author          :Carlos Vigil Vásquez
-#date            :20221214
-#version         :20221214a
+#date            :20230202
+#version         :20230202a
 #notes           :Requires foldseek, moma2 docker, tmux and pymol
 #copyright       :Copyright (C) 2022 Carlos Vigil Vásquez (cvigil2@uc.cl)
 #license         :Permission to copy and modify is granted under the MIT license
