@@ -135,6 +135,8 @@ while read -r HIT_CHAIN; do
 	tmux send-keys -t "$QUERY:0" "python /home/momatools/src/MOMA2_pw.py -q /home/momatools/data/input/${QUERY_PDB}.pdb -t /home/momatools/data/input/${HIT_PDB}.pdb --cq $QUERY_CHAIN --ct $HIT_CHAIN -s both" C-m
 	tmux send-keys -t "$QUERY:0" "python /home/momatools/src/generate_p1m.py /home/momatools/data/output/pairwise_alignments/${PAIR}_both" C-m
 done<"$GIT_ROOT"/results/"$RESULTS_PATH"/moma/input/hits.txt
+tmux send-keys -t "$QUERY:0" "exit" C-m
+tmux send-keys -t "$QUERY:0" "exit" C-m
 tmux attach -t "$QUERY"
 
 # Cleanup
