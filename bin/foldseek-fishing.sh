@@ -51,9 +51,6 @@ foldseek search "$QUERY" "$DATABASE" "$FOLDSEEK_RESULTS/alignment" /tmp \
   --tmscore-threshold 0 \
   -a \
   --max-seqs 100000 &> "$FOLDSEEK_RESULTS/alignment.log"
-  # --cov-mode 2 \
-  # -c 0.5 \
-  # --max-seqs 100000 &> "$FOLDSEEK_RESULTS/alignment.log"
 foldseek convertalis "$QUERY" "$DATABASE" \
   "$FOLDSEEK_RESULTS/alignment" \
   "$FOLDSEEK_RESULTS/alignment.tsv" \
