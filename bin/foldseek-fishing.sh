@@ -136,7 +136,6 @@ while read -r HIT_CHAIN; do
 	tmux send-keys -t "$QUERY:0" "python /home/momatools/src/generate_p1m.py /home/momatools/data/output/pairwise_alignments/${PAIR}_both" C-m
 done<"$GIT_ROOT"/results/"$RESULTS_PATH"/moma/input/hits.txt
 tmux attach -t "$QUERY"
-# TODO: Implementar imprinting de informacion de MSA a sesiones de Pymol
 
 # Cleanup
 rm "${DATABASE_PATH}"/"${QUERY}"*
