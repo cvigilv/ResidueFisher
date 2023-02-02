@@ -84,19 +84,19 @@ cat "${GIT_ROOT}/data/foldseek_dbs/${QUERY}_ss.fasta" "/tmp/hits.3di.fasta" > "$
 mafft --aamatrix "$GIT_ROOT/src/3di.mat" "$MSA_RESULTS/hits.3di.fasta" 1> "$MSA_RESULTS/msa.3di.fasta" 2> "$MSA_RESULTS/msa.3di.log"
 python3 "${GIT_ROOT}/src/analyzemsa.py" "$MSA_RESULTS/msa.3di.fasta" "$MSA_RESULTS/msa.3di_consensus.fasta"
 
-# 3.3. Convert 3di to aminoacids, and viceversa
-echo "3.3. Translation of 3di to aminoacid and viceversa"
-python3 "${GIT_ROOT}/src/translatefasta.py" "$MSA_RESULTS/msa.3di.fasta" "$DATABASE_PATH/${DATABASE}.fasta"  "$MSA_RESULTS/msa.3di_aa.fasta"
-python3 "${GIT_ROOT}/src/translatefasta.py" "$MSA_RESULTS/msa.aa.fasta" "$DATABASE_PATH/${DATABASE}_ss.fasta"  "$MSA_RESULTS/msa.aa_3di.fasta"
-python3 "${GIT_ROOT}/src/analyzemsa.py" "$MSA_RESULTS/msa.3di_aa.fasta" "$MSA_RESULTS/msa.3di2aa_consensus.fasta"
-python3 "${GIT_ROOT}/src/analyzemsa.py" "$MSA_RESULTS/msa.aa_3di.fasta" "$MSA_RESULTS/msa.aa23di_consensus.fasta"
+
+
+
+
+
+
 
 # 4. Tree construction and filtering
 echo "4. Tree construction and distance-based filtering"
 TREE_RESULTS="${GIT_ROOT}/results/${RESULTS_PATH}/tree"
 mkdir "$TREE_RESULTS" || exit 1
 
-for SOURCE in aa 3di aa_3di 3di_aa;
+for SOURCE in aa 3di;
 do
 	python3 "${GIT_ROOT}/src/createtree.py" "$MSA_RESULTS/msa.${SOURCE}.fasta" "$TREE_RESULTS/hits.${SOURCE}.nw" > "$TREE_RESULTS/tree.${SOURCE}.log"
 	python3 "${GIT_ROOT}/src/filtertree.py" "$TREE_RESULTS/hits.${SOURCE}.nw" "$TREE_RESULTS/pruned_tree.${SOURCE}.nw" &> "$TREE_RESULTS/prunning.${SOURCE}.log"
