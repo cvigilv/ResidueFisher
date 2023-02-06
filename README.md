@@ -2,6 +2,8 @@
 
 `foldseek-fishing` is a bioinformatics protocol for the search of protein homology using a three-step ”search, detect, and enrich” model that uses a combination of structural and sequence aligners working in tandem to filter and enrich conservation signals.
 
+![Protocol overview](./doc/figures/protocol.png)
+
 ## Table of Contents
 
 - [Dependencies](#dependencies)
