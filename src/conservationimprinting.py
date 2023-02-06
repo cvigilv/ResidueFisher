@@ -18,9 +18,14 @@ def imprint(pdb, conservation, session_name):
 
     # Add conservation information to structure
     bfacts = []
-    residues = [
-        int(atom.resi) for atom in cmd.get_model("name CA").atom
-    ]  # This is to avoid problems with gaps
+    residues = []
+    # NOTE: This is to avoid problems with gaps
+    for resi in [atom.resi for atom in cmd.get_model("resi *").atom]:
+        if resi not in residues:
+            residues.append(resi)
+
+    print(f"Adding conservation to {len(residues)} residues")
+
     for resn, line in enumerate(conservation):
         bfact = float(line)
         bfacts.append(bfact)
@@ -55,6 +60,7 @@ def imprint(pdb, conservation, session_name):
 
 
 def main():
+    print("conservationimprinting.py")
     query = sys.argv[1]
     msa = sys.argv[2]
     consensus = sys.argv[3]
