@@ -141,5 +141,27 @@ tmux send-keys -t "$QUERY:0" "exit" C-m
 tmux send-keys -t "$QUERY:0" "exit" C-m
 tmux attach -t "$QUERY"
 
+echo "5.3. Imprint MSA conservation to aligned structures with MOMA"
+mkdir "$GIT_ROOT/results/$RESULTS_PATH/moma/results/" || exit 1
+cd "$GIT_ROOT/results/$RESULTS_PATH/moma/results/" || exit 1
+
+for SOURCE in aa;
+do
+	python3 "${GIT_ROOT}/src/msa_moma.py" "$GIT_ROOT/results/$RESULTS_PATH/moma/output/pairwise_alignments/" "$GIT_ROOT/results/$RESULTS_PATH/msa/" "$SOURCE"
+	for i in *_*_both;
+	do
+		cd "$i"
+		echo "Analyzing MOMA results in -> " "$i" "$SOURCE"
+		python3 "${GIT_ROOT}/src/conservationimprinting_moma.py" \
+			"$(basename $QUERY_PATH)" \
+			"frag_aln_${SOURCE}.fasta" \
+			"msa.${SOURCE}_consensus.fasta" \
+			"msa.${SOURCE}_consensus.fasta_conservation" \
+			"${QUERY}.${SOURCE}_conservation.pse"
+		rm ./*pdb 
+		cd "$GIT_ROOT/results/$RESULTS_PATH/moma/results/"
+	done
+done
+
 # Cleanup
 rm "${DATABASE_PATH}"/"${QUERY}"*
