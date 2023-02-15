@@ -122,7 +122,6 @@ echo "5.2. Collecting all structures"
 python3 "${GIT_ROOT}/src/movepdbs.py" "$TREE_RESULTS/pruned_tree.*" "$PDBS_PATH" "$GIT_ROOT/results/$RESULTS_PATH/moma/input"
 
 tmux new-session -d -s "$QUERY"
-tmux rename-window -t "$QUERY:0" 'moma'
 tmux send-keys -t "$QUERY:0" "docker run -it -v $GIT_ROOT/results/$RESULTS_PATH/moma/:/home/momatools/data/ fggutierrez2018/moma2" C-m
 tmux send-keys -t "$QUERY:0" "cd /home/momatools/src" C-m
 
@@ -137,9 +136,9 @@ while read -r HIT_CHAIN; do
 	tmux send-keys -t "$QUERY:0" "python /home/momatools/src/MOMA2_pw.py -q /home/momatools/data/input/${QUERY_PDB}.pdb -t /home/momatools/data/input/${HIT_PDB}.pdb --cq $QUERY_CHAIN --ct $HIT_CHAIN -s both" C-m
 	tmux send-keys -t "$QUERY:0" "python /home/momatools/src/generate_p1m.py /home/momatools/data/output/pairwise_alignments/${PAIR}_both" C-m
 done<"$GIT_ROOT"/results/"$RESULTS_PATH"/moma/input/hits.txt
-tmux send-keys -t "$QUERY:0" "exit" C-m
-tmux send-keys -t "$QUERY:0" "exit" C-m
-tmux attach -t "$QUERY"
+tmux send-keys -t "$QUERY:0" "> /home/momatools/data/output/flag && exit" C-m
+until [ -f "$GIT_ROOT/results/$RESULTS_PATH/moma/output/flag" ]; do sleep 5; done
+tmux kill-session -t "$QUERY"
 
 echo "5.3. Imprint MSA conservation to aligned structures with MOMA"
 mkdir "$GIT_ROOT/results/$RESULTS_PATH/moma/results/" || exit 1
