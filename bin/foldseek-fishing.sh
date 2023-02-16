@@ -141,25 +141,20 @@ until [ -f "$GIT_ROOT/results/$RESULTS_PATH/moma/output/flag" ]; do sleep 5; don
 tmux kill-session -t "$QUERY"
 
 echo "5.3. Imprint MSA conservation to aligned structures with MOMA"
-mkdir "$GIT_ROOT/results/$RESULTS_PATH/moma/results/" || exit 1
-cd "$GIT_ROOT/results/$RESULTS_PATH/moma/results/" || exit 1
+mkdir $GIT_ROOT/results/$RESULTS_PATH/moma/results/ || exit 1
+cd $GIT_ROOT/results/$RESULTS_PATH/moma/results/
 
-for SOURCE in aa;
+for i in "$GIT_ROOT"/results/"$RESULTS_PATH"/moma/output/pairwise_alignments/*_*_both;
 do
-	python3 "${GIT_ROOT}/src/msa_moma.py" "$GIT_ROOT/results/$RESULTS_PATH/moma/output/pairwise_alignments/" "$GIT_ROOT/results/$RESULTS_PATH/msa/" "$SOURCE"
-	for i in *_*_both;
-	do
-		cd "$i"
-		echo "Analyzing MOMA results in -> " "$i" "$SOURCE"
-		python3 "${GIT_ROOT}/src/conservationimprinting_moma.py" \
-			"$(basename $QUERY_PATH)" \
-			"frag_aln_${SOURCE}.fasta" \
-			"msa.${SOURCE}_consensus.fasta" \
-			"msa.${SOURCE}_consensus.fasta_conservation" \
-			"${QUERY}.${SOURCE}_conservation.pse"
-		rm ./*pdb 
-		cd "$GIT_ROOT/results/$RESULTS_PATH/moma/results/"
-	done
+	folder_name=${i##*/}
+	mkdir $folder_name
+	cd $folder_name
+	echo "Analyzing MOMA results in -> ${folder_name}"
+	python3 "${GIT_ROOT}/src/fishresidues.py" \
+		"${GIT_ROOT}/results/${RESULTS_PATH}/msa/${QUERY}.aa_conservation.pse" \
+		"${GIT_ROOT}/results/${RESULTS_PATH}/moma/output/pairwise_alignments/$folder_name/best_combination" \
+		"${QUERY}.conservation_moma.pse"
+	cd $GIT_ROOT/results/$RESULTS_PATH/moma/results/
 done
 
 # Cleanup
