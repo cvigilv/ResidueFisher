@@ -2,6 +2,7 @@ import os
 import sys
 import pprint
 
+import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib as mpl
@@ -42,13 +43,16 @@ if __name__ == "__main__":
 
     # Cluster leafs based in distance using k-means
     clustering = defaultdict(list)
-    for i in tqdm(range(nleafs - 1, 1, -1)):
+    if nleafs > 100:
+        print("Number of hits {nleafs} > 100. Testing 100 evenly spaced number of clusters.")
+    clusters = np.unique(np.floor(np.linspace(2, nleafs, 100)).astype(int))
+    for i in tqdm(clusters):
         kmeans = KMeans(n_clusters=i, random_state=0).fit(dmat.values)
         silhouette = silhouette_score(
             dmat.values, kmeans.labels_, metric="precomputed", random_state=0
         )
 
-        clustering["nclusters"].append(i + 1)
+        clustering["nclusters"].append(i)
         clustering["silhouette"].append(silhouette)
         clustering["labels"].append(kmeans.labels_)
 
