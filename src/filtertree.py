@@ -45,7 +45,7 @@ if __name__ == "__main__":
     clustering = defaultdict(list)
     if nleafs > 100:
         print("Number of hits {nleafs} > 100. Testing 100 evenly spaced number of clusters.")
-    clusters = np.unique(np.floor(np.linspace(2, nleafs, 100)).astype(int))
+    clusters = np.unique(np.floor(np.linspace(2, nleafs-1, 100)).astype(int))
     for i in tqdm(clusters):
         kmeans = KMeans(n_clusters=i, random_state=0).fit(dmat.values)
         silhouette = silhouette_score(
