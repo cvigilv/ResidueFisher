@@ -31,7 +31,7 @@ RESULTS_PATH="${QUERY}_${DATABASE}"
 
 mkdir "${GIT_ROOT}/results/${RESULTS_PATH}" || exit 1
 
-# 1. Foldseek search
+# 0. Foldseek search
 echo "1. Foldseek structural search"
 FOLDSEEK_RESULTS="${GIT_ROOT}/results/${RESULTS_PATH}/foldseek"
 mkdir "$FOLDSEEK_RESULTS" || exit 1
@@ -155,8 +155,12 @@ if [ "$(ls -A "$DIR")" ]; then
             "${GIT_ROOT}/results/${RESULTS_PATH}/msa/${QUERY}.aa_conservation.pse" \
             "${GIT_ROOT}/results/${RESULTS_PATH}/moma/output/pairwise_alignments/$PAIR/best_combination" \
             "${QUERY}.conservation_moma.pse"
-        cd --
+        cd -
     done
+
+    python3 "${GIT_ROOT}/src/fishingsummary.py" \
+        "$GIT_ROOT/results/$RESULTS_PATH/moma/results/*/*.pse" \
+        "$GIT_ROOT/results/$RESULTS_PATH/moma/"
 else
     echo "Finishing foldseek-fishing because no alignments were found in MOMA"
 fi
