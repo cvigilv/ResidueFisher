@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-# import matplotlib as mpl
 import numpy as np
-
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
 import sys
-# import os
 
 def getstats(df, metrics = ['evalue', "alnlen", "pident", "alntmscore"]):
     return (
@@ -34,34 +31,53 @@ def main():
 
     # Plot results
     aln["p-evalue"] = -np.log10(aln["evalue"])
-    fig, axdict = plt.subplot_mosaic("ABC", figsize = (12,4))
-    sns.scatterplot(
-        x = "alnlen",
-        y = "pident",
-        hue = "p-evalue",
-        data = aln,
-        ax = axdict["A"],
-        palette = "Spectral",
-        legend = None
+    fig = make_subplots(
+    rows=1, cols=3)
+
+    fig.add_trace(go.Scatter(
+        x = aln["alnlen"],
+        y = aln["pident"],
+        mode='markers',
+        customdata = aln["target"],
+        hovertemplate="<br>Target:%{customdata}",
+        marker_color=aln["p-evalue"], 
+    ),
+    row=1, col=1
     )
-    sns.scatterplot(
-        x = "alnlen",
-        y = "alntmscore",
-        hue = "p-evalue",
-        data = aln,
-        ax = axdict["B"],
-        palette = "Spectral",
+
+    fig.add_trace(go.Scatter(
+        x = aln["alnlen"],
+        y = aln["alntmscore"],
+        mode='markers',
+        customdata = aln["target"],
+        hovertemplate="<br>Target:%{customdata}",
+        marker_color=aln["p-evalue"],
+    ),
+    row=1, col=2
     )
-    sns.scatterplot(
-        x = "pident",
-        y = "alntmscore",
-        hue = "p-evalue",
-        data = aln,
-        ax = axdict["C"],
-        palette = "Spectral",
-        legend = None
+    fig.add_trace(go.Scatter(
+        x = aln["pident"],
+        y = aln["alntmscore"],
+        mode='markers',
+        customdata = aln["target"],
+        hovertemplate="<br>Target:%{customdata}",
+        marker=dict(colorbar=dict(title = "p-evalue"), color=aln["p-evalue"]),
+    ),
+    row=1, col=3
     )
-    plt.tight_layout()
-    plt.savefig("regressions.png", dpi = 300)
+
+    # Update xaxis properties
+    fig.update_xaxes(title_text="Alignment Lenght", row=1, col=1)
+    fig.update_xaxes(title_text="Alignment Lenght", row=1, col=2)
+    fig.update_xaxes(title_text="Percent Identity", row=1, col=3)
+
+    # Update yaxis properties
+    fig.update_yaxes(title_text="Percent Identity", row=1, col=1)
+    fig.update_yaxes(title_text="Alignment TMscore", row=1, col=2)
+    fig.update_yaxes(title_text="Alignment TMscore", row=1, col=3)
+
+    fig.update_layout(height=600, width=1700,
+                  title_text="Foldseek analysis", showlegend=False)
+    fig.write_html("Regressions.html")
 
 main()
