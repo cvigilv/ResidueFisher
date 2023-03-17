@@ -139,21 +139,27 @@ until [ -f "$GIT_ROOT/results/$RESULTS_PATH/moma/output/flag" ]; do sleep 5; don
 tmux kill-session -t "$QUERY"
 
 echo "5.3. Imprint MSA conservation to aligned structures with MOMA"
-mkdir "$GIT_ROOT/results/$RESULTS_PATH/moma/results/" || exit 1
-cd "$GIT_ROOT/results/$RESULTS_PATH/moma/results/"
+rm "$GIT_ROOT/results/$RESULTS_PATH/moma/output/flag"
+DIR="$GIT_ROOT"/results/"$RESULTS_PATH"/moma/output/
+if [ "$(ls -A "$DIR")" ]; then
+    mkdir "$GIT_ROOT/results/$RESULTS_PATH/moma/results/" || exit 1
+    cd "$GIT_ROOT/results/$RESULTS_PATH/moma/results/"
 
-for i in "$GIT_ROOT"/results/"$RESULTS_PATH"/moma/output/pairwise_alignments/*_*_both;
-do
-	folder_name=${i##*/}
-	mkdir "$folder_name"
-	cd "$folder_name"
-	echo "Analyzing MOMA results in -> ${folder_name}"
-	python3 "${GIT_ROOT}/src/fishresidues.py" \
-		"${GIT_ROOT}/results/${RESULTS_PATH}/msa/${QUERY}.aa_conservation.pse" \
-		"${GIT_ROOT}/results/${RESULTS_PATH}/moma/output/pairwise_alignments/$folder_name/best_combination" \
-		"${QUERY}.conservation_moma.pse"
-	cd "$GIT_ROOT/results/$RESULTS_PATH/moma/results/"
-done
+    for i in "$GIT_ROOT"/results/"$RESULTS_PATH"/moma/output/pairwise_alignments/*_*_both;
+    do
+        PAIR=${i##*/}
+        mkdir "$PAIR"
+        cd "$PAIR"
+        echo "Analyzing MOMA results in -> ${PAIR}"
+        python3 "${GIT_ROOT}/src/fishresidues.py" \
+            "${GIT_ROOT}/results/${RESULTS_PATH}/msa/${QUERY}.aa_conservation.pse" \
+            "${GIT_ROOT}/results/${RESULTS_PATH}/moma/output/pairwise_alignments/$PAIR/best_combination" \
+            "${QUERY}.conservation_moma.pse"
+        cd --
+    done
+else
+    echo "Finishing foldseek-fishing because no alignments were found in MOMA"
+fi
 
 # Cleanup
 rm "${DATABASE_PATH}"/"${QUERY}"*
