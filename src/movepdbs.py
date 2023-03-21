@@ -19,8 +19,8 @@ def main():
 
     # Get representative hits for each tree
     trees = glob(sys.argv[1])
-    source = sys.argv[2]
-    target = sys.argv[3]
+    source_path = sys.argv[2]
+    target_path = sys.argv[3]
 
     allhits = set()
     for treepath in trees:
@@ -29,11 +29,11 @@ def main():
         treehits = {leaf.name for leaf in T.get_leaves()}
         allhits.update(treehits)
 
-    with open(f"{target}/hits.txt", "w") as io:
+    with open(f"{target_path}/hits.txt", "w") as io:
         io.write("\n".join(allhits))
 
     for hit in allhits:
-        shutil.copy2(f"{source}/{hit[0:4]}.pdb", f"{target}/{hit[0:4]}.pdb")
+        shutil.copy2(f"{source_path}/{hit[0:4]}.pdb", f"{target_path}/{hit[0:4]}.pdb")
 
 if __name__ == "__main__":
     main()

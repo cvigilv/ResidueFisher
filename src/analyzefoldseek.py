@@ -40,7 +40,7 @@ def main():
         y = aln["pident"],
         mode='markers',
         customdata = aln["target"],
-        hovertemplate="<br>Target:%{customdata}",
+        hovertemplate="<br>Hit: %{customdata}",
         marker_color=aln["p-evalue"], 
     ),
     row=1, col=1
@@ -51,7 +51,7 @@ def main():
         y = aln["alntmscore"],
         mode='markers',
         customdata = aln["target"],
-        hovertemplate="<br>Target:%{customdata}",
+        hovertemplate="<br>Hit: %{customdata}",
         marker_color=aln["p-evalue"],
     ),
     row=1, col=2
@@ -61,7 +61,7 @@ def main():
         y = aln["alntmscore"],
         mode='markers',
         customdata = aln["target"],
-        hovertemplate="<br>Target:%{customdata}",
+        hovertemplate="<br>Hit: %{customdata}",
         marker=dict(colorbar=dict(title = "p-evalue"), color=aln["p-evalue"]),
     ),
     row=1, col=3
@@ -78,7 +78,7 @@ def main():
     fig.update_yaxes(title_text="Alignment TMscore", row=1, col=3)
 
     fig.update_layout(height=600, width=1700,
-                  title_text="Foldseek analysis", showlegend=False)
-    fig.write_html("Regressions.html")
+                  title_text="Foldseek search analysis", showlegend=False)
+    fig.write_html("regressions.html")
 
 main()

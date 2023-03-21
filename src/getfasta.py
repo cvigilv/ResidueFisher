@@ -50,7 +50,7 @@ def main():
     # Load sequences
     seqs = {record.id: record.seq for record in SeqIO.parse(sys.argv[2], "fasta")}
 
-    # Create FASTA sequences per target
+    # Create FASTA sequences per hit
     fasta = (
         aln[["target", "tstart", "tend"]]
         .apply(lambda r: getsequence(r["target"], r["tstart"], r["tend"], seqs), axis=1)
