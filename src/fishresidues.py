@@ -30,45 +30,85 @@ def main():
     cmd.load(query)
     cmd.delete("conservation")
     query_name = cmd.get_names("objects")[0]
-    cmd.show_as("cartoon")
-    cmd.cartoon("automatic")
-    cmd.set("cartoon_transparency", 0.5, "all")
-    for hit in allhits:
-        query_file = sys.argv[2] + "/" + query_name.replace("_","") + "_" + "_".join(hit.split("/")[-1].split("_")[1:-1]) + "_q.pdb"
-        query_frag = query_name.replace("_","") + "_" + "_".join(hit.split("/")[-1].split("_")[1:-1]) + "_q"
-        hit_frag = hit.strip('.pdb').split('/')[-1]
-        fragment_name = "_".join(hit.split("/")[-1].split("_")[1:-1])
+
+    # Stylize
+    cmd.bg_color("white")
+    cmd.set("antialias", 5)
+    cmd.set("ambient", 0.7)
+    cmd.set("ray_trace_mode", 1)
+
+    # Fish residues
+    for hit_file in allhits:
+        # Get paths
+        query_file = sys.argv[2] + "/" + query_name.replace("_","") + "_" + "_".join(hit_file.split("/")[-1].split("_")[1:-1]) + "_q.pdb"
+        query_fragment = query_name.replace("_","") + "_" + "_".join(hit_file.split("/")[-1].split("_")[1:-1]) + "_q"
+        hit_fragment = hit_file.strip('.pdb').split('/')[-1]
+        fragment_name = "_".join(hit_file.split("/")[-1].split("_")[1:-1])
+
+        # Load structures
         cmd.load(query_file)
-        cmd.load(hit)
-        query_residues1= f"({query_name} and conservation_gt50_le75 and name CA)"
-        cmd.select(f"byres {query_frag} within 0.1 of {query_residues1}")
-        cmd.set_name("sele", "conservation_gt50_le75_" + query_frag)
-        query_residues2= f"({query_name} and conservation_gt75_le100 and name CA)"
-        cmd.select(f"byres {query_frag} within 0.1 of {query_residues2}")
-        cmd.set_name("sele", "conservation_gt75_le100_" + query_frag)
-        # Colors and physico-chemical groups
+        cmd.load(hit_file)
+
+        # Generate fragment selections
+        query_residues= f"({query_name} and conservation_gt75_le100 and name CA)"
+        cmd.select(f"byres {query_fragment} within 0.1 of {query_residues}")
+        cmd.set_name("sele", "conservation_gt75_le100_" + query_fragment)
+
+        # Colors physicochemical groups
         for group, resn in AA_GROUPS.items():
-            cmd.select(f"resn {resn} and {query_frag}")
-            cmd.set_name("sele", f"{group}_{query_frag}")
-            cmd.color(AA_COLORS[group], f"{group}_{query_frag}")
-            cmd.select(f"resn {resn} and {hit_frag}")
-            cmd.set_name("sele", f"{group}_{hit_frag}")
-            cmd.color(AA_COLORS[group], f"{group}_{hit_frag}")
+            cmd.select(f"resn {resn} and {query_fragment} and name C*")
+            cmd.set_name("sele", f"{group}_{query_fragment}")
+            cmd.color(AA_COLORS[group], f"{group}_{query_fragment}")
+
+            cmd.select(f"resn {resn} and {hit_fragment} and name C*")
+            cmd.set_name("sele", f"{group}_{hit_fragment}")
+            cmd.color(AA_COLORS[group], f"{group}_{hit_fragment}")
+
         # "Fish" residues
         for group in AA_GROUPS.keys():
-            query_residues= f"({query_frag} and conservation_gt75_le100_{query_frag} and {group}_{query_frag} and name CA)"
-            hit_residues = f"({hit_frag} and {group}_{hit_frag} and name CA)"
-            cmd.select(f"byres {hit_residues} within {str(TOLERANCE)} of {query_residues}")
+            query_residues= f"({query_fragment} and conservation_gt75_le100_{query_fragment} and {group}_{query_fragment} and name CA)"
+            hit_residues = f"({hit_fragment} and {group}_{hit_fragment} and name CA)"
+
+            cmd.select(f"byres {query_residues} within {str(TOLERANCE)} of {hit_residues}")
             cmd.set_name("sele", f"fished_{group}_{fragment_name}")
-            cmd.show("lines", f"byres {query_residues} within {str(TOLERANCE)} of fished_{group}_{fragment_name}")
+
+            # Stylize fished residues
+            cmd.show("lines", f"byres {hit_residues} within {str(TOLERANCE)} of fished_{group}_{fragment_name}")
             cmd.show("sticks", f"fished_{group}_{fragment_name}")
-            cmd.set("stick_transparency", 0.5, "all")
-        cmd.delete(f"*_aa_{hit_frag}")
-        cmd.delete(f"*_aa_{query_frag}")
-        cmd.scene(f"Fragments_{fragment_name}", "store", f"Residues that show more than 75% of conservation while maintaining physicochemical properties\nare shown in lines (query) and sticks (hit).")
+
+        # Remove junk selections
+        cmd.delete(f"*_aa_{hit_fragment}")
+        cmd.delete(f"*_aa_{query_fragment}")
+
+        # Create scene for fragment for ease of analysis
+        for fragment in [query_fragment, hit_fragment]:
+            cmd.cartoon("loop", fragment)
+            cmd.set("cartoon_transparency", 0.8, fragment)
+
+        cmd.center(query_fragment)
+        cmd.zoom(query_fragment)
+        cmd.scene(f"Fragments_{fragment_name}", "store", f"Fished residues (conservation > 75% and same physicochemical properties) are shown in sticks.\nLines correspond to hit structure equivalent residues.")
         cmd.disable("all")
 
-    cmd.scene(f"Fragments_{fragment_name}", "recall")
+    # Create complete structure scenes
+    cmd.enable("*_*_q")
+    cmd.center("all")
+    cmd.zoom("all")
+    cmd.scene(f"Query", "store", f"Fished residues (conservation > 75% and same physicochemical properties) are shown in sticks.\nLines correspond to hit structure equivalent residues.")
+    cmd.disable("all")
+
+    cmd.enable("*_*_t")
+    cmd.center("all")
+    cmd.zoom("all")
+    cmd.scene(f"Hit", "store", f"Fished residues (conservation > 75% and same physicochemical properties) are shown in sticks.\nLines correspond to hit structure equivalent residues.")
+    cmd.disable("all")
+
+    cmd.enable("*_*_*")
+    cmd.center("all")
+    cmd.zoom("all")
+    cmd.scene(f"Complete", "store", f"Fished residues (conservation > 75% and same physicochemical properties) are shown in sticks.\nLines correspond to hit structure equivalent residues.")
+
+    # Remove useless selections
     cmd.delete(query_name)
     cmd.delete("conservation_gt75_le100")
     cmd.delete("conservation_gt50_le75")

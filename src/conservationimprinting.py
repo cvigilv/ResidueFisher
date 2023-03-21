@@ -56,6 +56,14 @@ def imprint(pdb, conservation, session_name):
 
     cmd.show("lines", "conservation_gt75_le100")
     cmd.deselect()
+
+    # Stylize visualization
+    cmd.bg_color("white")
+    cmd.set("antialias", 5)
+    cmd.set("ambient", 0.7)
+    cmd.set("ray_trace_mode", 1)
+    cmd.set("transparency", 0.6)
+
     cmd.save(session_name)
 
 
