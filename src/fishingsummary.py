@@ -47,12 +47,6 @@ if __name__ == "__main__":
     plt.ylabel("Fished residues")
     plt.xticks(rotation=90, ha="center")
     plt.title("'Fished' residues per hit")
-    plt.legend(
-        title="Sequence kind",
-        loc="center left",
-        bbox_to_anchor=(1, 0.5),
-        fancybox=True,
-    )
     plt.savefig(
         sys.argv[3] + f"fished_residues.fished_per_hit.{kind}.png",
         dpi=300,
@@ -66,12 +60,6 @@ if __name__ == "__main__":
     plt.ylabel("Times fished")
     plt.xticks(rotation=90, ha="center")
     plt.title("Frequency a residue is 'fished'")
-    plt.legend(
-        title="Sequence kind",
-        loc="center left",
-        bbox_to_anchor=(1, 0.5),
-        fancybox=True,
-    )
     plt.savefig(
         sys.argv[3] + f"fished_residues.fished_per_resi.{kind}.png",
         dpi=300,
