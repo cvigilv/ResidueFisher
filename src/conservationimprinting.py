@@ -2,7 +2,7 @@
 
 import sys
 import numpy as np
-from pymol import cmd
+from pymol import cmd, util
 from Bio import SeqIO
 
 
@@ -54,7 +54,10 @@ def imprint(pdb, conservation, session_name):
         cmd.select(f"{mol} & byresidue b > {lower} & byresidue b < {upper+0.1} ")
         cmd.set_name("sele", f"conservation_gt{lower}_le{upper}")
 
-    cmd.show("lines", "conservation_gt75_le100")
+    cmd.show("sticks", "conservation_gt75_le100")
+    util.cnc("conservation_gt75_le100")
+    cmd.label("conservation_gt75_le100 and n. ca", "'%s%s' %(resn, resi)")
+
     cmd.deselect()
 
     # Stylize visualization
@@ -62,7 +65,8 @@ def imprint(pdb, conservation, session_name):
     cmd.set("antialias", 5)
     cmd.set("ambient", 0.7)
     cmd.set("ray_trace_mode", 1)
-    cmd.set("transparency", 0.6)
+    cmd.set("cartoon_transparency", 0.5)
+    cmd.set("ray_trace_mode", 0)
 
     cmd.save(session_name)
 
