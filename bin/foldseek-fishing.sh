@@ -153,12 +153,23 @@ if [ "$(ls -A "$DIR")" ]; then
         python3 "${GIT_ROOT}/src/fishresidues.py" \
             "${GIT_ROOT}/results/${RESULTS_PATH}/msa/${QUERY}.aa_conservation.pse" \
             "${GIT_ROOT}/results/${RESULTS_PATH}/moma/output/pairwise_alignments/$PAIR/best_combination" \
-            "${QUERY}.conservation_moma.pse"
+            "${QUERY}.aa_conservation_moma.pse"
+
+        python3 "${GIT_ROOT}/src/fishresidues.py" \
+            "${GIT_ROOT}/results/${RESULTS_PATH}/msa/${QUERY}.3di_conservation.pse" \
+            "${GIT_ROOT}/results/${RESULTS_PATH}/moma/output/pairwise_alignments/$PAIR/best_combination" \
+            "${QUERY}.3di_conservation_moma.pse"
         cd -
     done
 
     python3 "${GIT_ROOT}/src/fishingsummary.py" \
-        "$GIT_ROOT/results/$RESULTS_PATH/moma/results/*/*.pse" \
+        "$GIT_ROOT/results/$RESULTS_PATH/moma/results/*/*aa*.pse" \
+        "aa" \
+        "$GIT_ROOT/results/$RESULTS_PATH/moma/"
+
+    python3 "${GIT_ROOT}/src/fishingsummary.py" \
+        "$GIT_ROOT/results/$RESULTS_PATH/moma/results/*/*3di*.pse" \
+        "3di" \
         "$GIT_ROOT/results/$RESULTS_PATH/moma/"
 else
     echo "Finishing foldseek-fishing because no alignments were found in MOMA"
