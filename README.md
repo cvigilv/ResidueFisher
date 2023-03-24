@@ -30,7 +30,7 @@ cd ResidueFisher
 make configure
 conda activate ResidueFisher
 ```
-In order to use `ResidueFisher`, que conda environment must be active (`conda activate ResidueFisher`)
+In order to use `ResidueFisher`, the conda environment must be active (`conda activate ResidueFisher`)
 
 ## Usage
 ### Database preparation
