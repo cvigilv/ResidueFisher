@@ -169,4 +169,4 @@ dependencies:
       - threadpoolctl==3.1.0
       - tqdm==4.64.1
       - zipp==3.6.0
-prefix: $HOME/.conda/envs/ResidueFisher
+prefix: $CONDA_PREFIX/ResidueFisher
