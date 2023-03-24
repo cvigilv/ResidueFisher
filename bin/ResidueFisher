@@ -1,11 +1,11 @@
 #!/bin/bash
-#title           :foldseek-fishing.sh
+#title           :ResidueFisher
 #description     :Find structural and sequence information for PDB
 #author          :Carlos Vigil Vásquez
-#date            :20230202
-#version         :20230202a
+#date            :20230324
+#version         :1.0
 #notes           :Requires foldseek, moma2 docker, tmux and pymol
-#copyright       :Copyright (C) 2022 Carlos Vigil Vásquez (cvigil2@uc.cl)
+#copyright       :Refer to LICENSE
 #license         :Permission to copy and modify is granted under the MIT license
 
 set -o errexit
@@ -23,7 +23,7 @@ if [[ -z $1 || $# -lt 2 || $# -ge 3 ]]; then
 fi
 
 # 0. Initialize script
-echo "foldseek-fishing.sh - $(date)"
+echo "ResidueFisher - $(date) v1.0"
 QUERY=$(basename "$1" | sed "s/.pdb//" | sed "s/_//")
 QUERY_PATH=$(readlink -f "$1")
 DATABASE="$2"

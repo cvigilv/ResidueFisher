@@ -1,6 +1,6 @@
-# Foldseek-fishing
+# ResidueFisher
 
-`foldseek-fishing` is a bioinformatics protocol for the search of protein homology using a three-step ”search, detect, and enrich” model that uses a combination of structural and sequence aligners working in tandem to filter and enrich conservation signals.
+`ResidueFisher` is a bioinformatics protocol for the search of protein homology using a three-step ”search, detect, and enrich” model that uses a combination of structural and sequence aligners working in tandem to filter and enrich conservation signals.
 
 ![Protocol overview](./doc/figures/protocol.png)
 
@@ -14,7 +14,7 @@
 
 ## Dependencies
 
-`foldseek-fishing` depends on:
+`ResidueFisher` depends on:
 - bash
 - conda
 - docker
@@ -23,14 +23,14 @@
 
 ## Installation
 
-To install `foldseek-fishing`, run the following code snippet:
+To install `ResidueFisher`, run the following code snippet:
 ```sh
-git clone https://github.com/cvigilv/foldseek-fishing
-cd foldseek-fishing
+git clone https://github.com/cvigilv/ResidueFisher
+cd ResidueFisher
 make configure
-conda activate foldseek-fishing
+conda activate ResidueFisher
 ```
-In order to use `foldseek-fishing`, que conda environment must be active (`conda activate foldseek-fishing`)
+In order to use `ResidueFisher`, que conda environment must be active (`conda activate ResidueFisher`)
 
 ## Usage
 ### Database preparation
@@ -45,7 +45,7 @@ sh bin/prep_database.sh PDB mypdb
 ```
 To see the available datasets, run `bin/prep_database.sh` without arguments.
 
-To prepare a database from PDB files, please refer to [foldseek tutorial](https://github.com/steineggerlab/foldseek#databases). In order for `foldseek-fishing` to work correctly, user created databases must be inside a directory named `data/foldseek_dbs` in the proyect root and must contain FASTA files for the aminoacid sequence and 3di sequence, which can be created as follows:
+To prepare a database from PDB files, please refer to [foldseek tutorial](https://github.com/steineggerlab/foldseek#databases). In order for `ResidueFisher` to work correctly, user created databases must be inside a directory named `data/foldseek_dbs` in the proyect root and must contain FASTA files for the aminoacid sequence and 3di sequence, which can be created as follows:
 ```sh
 foldseek convert2fasta <USER-DB-NAME> <USER-DB-NAME>.fasta
 foldseek lndb <USER-DB-NAME>_h <USER-DB-NAME>_ss_h
@@ -53,15 +53,15 @@ foldseek convert2fasta <USER-DB-NAME>_ss <USER-DB-NAME>_ss.fasta
 ```
 
 ### Query protein preparation
-Unlike Foldseek, this protocol is intended to study a single protein chain; therefore, in order to use foldseek-fishing, one must first extract this from its original PDB file.
+Unlike Foldseek, this protocol is intended to study a single protein chain; therefore, in order to use ResidueFisher, one must first extract this from its original PDB file.
 
-In the `src/scripts` folder, there is a script called `splitchains.py`, which extracts all the strings from a particular PDB file and saves them as separate files for use in foldseek-fishing.
+In the `src/scripts` folder, there is a script called `splitchains.py`, which extracts all the strings from a particular PDB file and saves them as separate files for use in ResidueFisher.
 
 *Note*: the recommended way of preparing and storing all the structure files is creating a new folder in data called `queries` (due to the nature of this files) and run the chain splitting script inside this folder. Here is an example of this procedure:
 
 ```sh
 # Ensure we have the conda environment activated 
-conda activate foldseek-fishing
+conda activate ResidueFisher
 
 # Assuming we are at the project root...
 mkdir data/queries
@@ -74,12 +74,12 @@ From this example, a total of 13 should be found inside the `data/queries` folde
 
 ### Foldseek-fishing Usage
 
-To use foldseek-fishing, run the script `bin/foldseek-fishing.sh` script as follows:
+To use ResidueFisher, run the script `bin/ResidueFisher.sh` script as follows:
 ```sh
-sh bin/foldseek-fishing.sh <PDB-FILE> <INTERNAL-DATABASE-NAME>
+sh bin/ResidueFisher.sh <PDB-FILE> <INTERNAL-DATABASE-NAME>
 
 # Example using the previously prepared protein and dataset
-sh bin/foldseek-fishing.sh data/queries/3F3P_C.pdb mypdb
+sh bin/ResidueFisher.sh data/queries/3F3P_C.pdb mypdb
 ```
 
 This will generate a folder in `results` with the following structure:
@@ -95,13 +95,13 @@ Inside each subdirectory, log files and result can be found in order to analyse 
 
 ## Support
 
-Please [open an issue](https://github.com/cvigilv/foldseek-fishing/issues/new) for
+Please [open an issue](https://github.com/cvigilv/ResidueFisher/issues/new) for
 support.
 
 ## Contributing
 
 Please contribute using [Github Flow](https://guides.github.com/introduction/flow/). Create a branch, add
-commits, and [open a pull request](https://github.com/cvigilv/foldseek-fishing/compare/).
+commits, and [open a pull request](https://github.com/cvigilv/ResidueFisher/compare/).
 
 ## License
 
