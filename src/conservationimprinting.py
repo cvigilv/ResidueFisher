@@ -55,8 +55,6 @@ def imprint(pdb, conservation, session_name):
         cmd.set_name("sele", f"conservation_gt{lower}_le{upper}")
 
     cmd.show("sticks", "conservation_gt75_le100")
-    util.cnc("conservation_gt75_le100")
-    cmd.label("conservation_gt75_le100 and n. ca", "'%s%s' %(resn, resi)")
 
     cmd.deselect()
 
