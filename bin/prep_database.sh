@@ -31,9 +31,9 @@ NAME="$2"
 
 mkdir -p "$DATABASE_PATH"
 cd "$DATABASE_PATH" || exit 1
-foldseek databases "$DATABASE" "$NAME" /tmp
+foldseek databases "$DATABASE" "$NAME" ./ || exit 1
 
 # Create FASTA files for aa and 3di sequences
-foldseek convert2fasta "${NAME}" "${NAME}.fasta" 
-foldseek lndb "${NAME}_h" "${NAME}_ss_h" 
-foldseek convert2fasta "${NAME}_ss" "${NAME}_ss.fasta" 
+foldseek convert2fasta "${NAME}" "${NAME}.fasta"
+foldseek lndb "${NAME}_h" "${NAME}_ss_h"
+foldseek convert2fasta "${NAME}_ss" "${NAME}_ss.fasta"
